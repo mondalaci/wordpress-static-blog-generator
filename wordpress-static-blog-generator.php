@@ -46,15 +46,19 @@ function get_post_filename($post)
     return $post_filename;
 }
 
-$posts = get_posts(array('posts_per_page'=>PHP_INT_MAX));
+// Extract posts into individual files.
 
+$posts = get_posts(array('posts_per_page'=>PHP_INT_MAX));
 $post_filenames = array();
 $table_of_contents = '';
 foreach ($posts as $post) {
     $post_filename = save_post($post);
     $post_filenames[] = $post_filename;
-    $table_of_contents .= "<li><a href=\"$post_filename\">".htmlspecialchars($post->post_title)."</a></li>\n";
+    $table_of_contents .= "<li><a href=\"$post_filename\" target=\"post\">".
+                          htmlspecialchars($post->post_title)."</a></li>\n";
 }
+
+// Create table of contents.
 
 $table_of_contents =
 "<!DOCTYPE html>
@@ -69,6 +73,26 @@ $table_of_contents
 </html>
 ";
 file_put_contents(TARGET_PATH . '/toc.html', $table_of_contents);
+
+// Create index page.
+
+$index =
+"<!DOCTYPE html>
+<html>
+<head>
+<title>My backup blog</title>
+<meta charset=\"utf-8\">
+</head>
+<frameset cols=\"25%,*\">
+  <frame src=\"toc.html\">
+  <frame name=\"post\">
+</frameset>
+</html>
+";
+$index_filepath = TARGET_PATH . '/index.html';
+if (!file_exists($index_filepath)) {
+    file_put_contents($index_filepath, $index);
+}
 
 print count($posts) . " posts have been archived\n";
 
