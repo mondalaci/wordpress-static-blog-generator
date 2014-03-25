@@ -54,8 +54,9 @@ $table_of_contents = '';
 foreach ($posts as $post) {
     $post_filename = save_post($post);
     $post_filenames[] = $post_filename;
-    $table_of_contents .= "<li><a href=\"$post_filename\" target=\"post\">".
-                          htmlspecialchars($post->post_title)."</a></li>\n";
+    $table_of_contents .= "<a href=\"$post_filename\" target=\"post\">".
+                          $post->post_date_gmt.' GMT<br>'.htmlspecialchars($post->post_title).
+                          "</a><hr>\n";
 }
 
 // Create table of contents.
