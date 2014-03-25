@@ -23,6 +23,10 @@ function get_post_html($post)
     return
 "<!DOCTYPE html>
 <html>
+<head>
+<title>$title</title>
+<meta charset=\"utf-8\">
+</head>
 <body>
 <h1>$title</h1>
 <p>$date</p>
@@ -42,13 +46,30 @@ function get_post_filename($post)
     return $post_filename;
 }
 
-$posts = get_posts(array('posts_per_page'=>5/*PHP_INT_MAX*/));
-var_dump($posts);
-print count($posts);
+$posts = get_posts(array('posts_per_page'=>PHP_INT_MAX));
 
 $post_filenames = array();
+$table_of_contents = '';
 foreach ($posts as $post) {
-    $post_filenames[] = save_post($post);
+    $post_filename = save_post($post);
+    $post_filenames[] = $post_filename;
+    $table_of_contents .= "<li><a href=\"$post_filename\">".htmlspecialchars($post->post_title)."</a></li>\n";
 }
+
+$table_of_contents =
+"<!DOCTYPE html>
+<html>
+<head>
+<title>Table of Contents</title>
+<meta charset=\"utf-8\">
+</head>
+<body>
+$table_of_contents
+</body>
+</html>
+";
+file_put_contents(TARGET_PATH . '/toc.html', $table_of_contents);
+
+print count($posts) . " posts have been archived\n";
 
 ?>
