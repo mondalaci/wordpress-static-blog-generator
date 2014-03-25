@@ -86,13 +86,36 @@ $index =
 </head>
 <frameset cols=\"25%,*\">
   <frame src=\"toc.html\">
-  <frame name=\"post\">
+  <frame name=\"post\" src=\"welcome.html\">
 </frameset>
 </html>
 ";
 $index_filepath = TARGET_PATH . '/index.html';
 if (!file_exists($index_filepath)) {
     file_put_contents($index_filepath, $index);
+}
+
+// Create default post.
+
+$welcome =
+"<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome!</title>
+<meta charset=\"utf-8\">
+</head>
+<body>
+</body>
+<h1>Welcome!</h1>
+<p>Welcome to my backup blog - a static, backed-up version of my blog created with
+   <a href=\"https://github.com/mondalaci/wordpress-static-blog-generator\" target=\"_blank\">
+   WordPress Static Blog Generator</a>.</p>
+<p>Feel free to navigate around using the Table of Contents of the left frame.</p>
+</html>
+";
+$welcome_filepath = TARGET_PATH . '/welcome.html';
+if (!file_exists($welcome_filepath)) {
+    file_put_contents($welcome_filepath, $welcome);
 }
 
 print count($posts) . " posts have been archived\n";
