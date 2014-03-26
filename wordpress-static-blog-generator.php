@@ -13,7 +13,7 @@ $table_of_contents = '';
 foreach ($posts as $post) {
     $post_filename = save_post($post);
     $post_filenames[] = $post_filename;
-    $table_of_contents .= "<a href=\"$post_filename\" target=\"post\">".
+    $table_of_contents .= "<a href=\"$post_filename\" target=\"post\" onclick=\"highlight(this)\">".
                           $post->post_date_gmt.' GMT<br>'.htmlspecialchars($post->post_title).
                           "</a><hr>\n";
 }
@@ -29,6 +29,16 @@ $table_of_contents =
 </head>
 <body>
 $table_of_contents
+<script>
+function highlight(link)
+{
+    var elements = document.getElementsByTagName('a');
+    for (var i=0; i<elements.length; i++) {
+        elements[i].style.background = 'white';
+    }
+    link.style.background = 'yellow';
+}
+</script>
 </body>
 </html>
 ";
