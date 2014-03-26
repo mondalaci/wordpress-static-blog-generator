@@ -1,9 +1,17 @@
 <?php
 
-define('WORDPRESS_PATH', '.');
-define('TARGET_PATH', 'static-blog');
+if (file_exists('config.php')) {
+    require 'config.php';
+}
 
-include WORDPRESS_PATH . '/wp-load.php';
+if (!defined('WORDPRESS_PATH')) {
+    define('WORDPRESS_PATH', '.');
+}
+if (!defined('TARGET_PATH')) {
+    define('TARGET_PATH', 'static-blog');
+}
+
+require WORDPRESS_PATH . '/wp-load.php';
 
 // Extract pages and posts into individual files.
 
@@ -156,5 +164,3 @@ function get_post_filename($post)
     $post_filename = "$post_basename.html";
     return $post_filename;
 }
-
-?>
