@@ -5,16 +5,16 @@ define('TARGET_PATH', 'static-blog');
 
 include WORDPRESS_PATH . '/wp-load.php';
 
-// Extract posts into individual files.
+// Extract pages and posts into individual files.
 
-$posts = get_posts(array('posts_per_page'=>PHP_INT_MAX));
+$posts = array_merge(get_pages(), get_posts(array('posts_per_page'=>PHP_INT_MAX)));
 $post_filenames = array();
-$table_of_contents = '';
 foreach ($posts as $post) {
     $post_filename = save_post($post);
     $post_filenames[] = $post_filename;
+    $post_date = $post->post_type=='page' ? '' : $post->post_date_gmt.' GMT<br>';
     $table_of_contents .= "<a href=\"$post_filename\" target=\"post\" onclick=\"highlight(this)\">".
-                          $post->post_date_gmt.' GMT<br>'.htmlspecialchars($post->post_title).
+                          $post_date.htmlspecialchars($post->post_title).
                           "</a><hr>\n";
 }
 
@@ -96,6 +96,9 @@ print count($posts) . " posts have been archived\n";
 function save_post($post)
 {
     $post_filename = get_post_filename($post);
+    if ($post->post_type == 'page') {
+        $post_filename = "page-$post_filename";
+    }
     $post_filepath = TARGET_PATH . "/$post_filename";
     $post_html = get_post_html($post);
     file_put_contents($post_filepath, $post_html);
@@ -105,7 +108,7 @@ function save_post($post)
 function get_post_html($post)
 {
     $title = htmlspecialchars($post->post_title);
-    $date = $post->post_date_gmt . " GMT";
+    $date = $post->post_type=='page' ? '' : "<p>" . $post->post_date_gmt . " GMT</p>\n";
     $comments = get_post_comments($post);
     $html = wpautop($post->post_content) . ($comments ? '<hr>' : '') . $comments;
 
@@ -118,8 +121,7 @@ function get_post_html($post)
 </head>
 <body>
 <h1>$title</h1>
-<p>$date</p>
-$html</body>
+$date$html</body>
 </html>
 ";
 }
