@@ -96,7 +96,8 @@ function get_post_html($post)
 {
     $title = htmlspecialchars($post->post_title);
     $date = $post->post_date_gmt . " GMT";
-    $html = wpautop($post->post_content);
+    $comments = get_post_comments($post);
+    $html = wpautop($post->post_content) . ($comments ? '<hr>' : '') . $comments;
 
     return
 "<!DOCTYPE html>
@@ -111,7 +112,27 @@ function get_post_html($post)
 $html</body>
 </html>
 ";
+}
 
+function get_post_comments($post)
+{
+    $comments = get_comments(array('post_id'=>$post->ID, 'order'=>'ASC'));
+    $comments_html = array();
+    foreach ($comments as $comment) {
+        $comments_html[] = get_comment_html($comment);
+    }
+    return implode("<hr>", $comments_html);
+}
+
+function get_comment_html($comment)
+{
+    $author = htmlspecialchars($comment->comment_author);
+    $author_url = htmlspecialchars($comment->comment_author_url);
+    $linked_author = $author_url ? '<a href="'.$author_url.'">'.$author.'</a>' : $author;
+    $datestamp = $comment->comment_date_gmt . ' GMT:';
+    $content = wpautop($comment->comment_content);
+    $comment_html = "Comment written by $linked_author at $datestamp<br>$content\n";
+    return $comment_html;
 }
 
 function get_post_filename($post)
