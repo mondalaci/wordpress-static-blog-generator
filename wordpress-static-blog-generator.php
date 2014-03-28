@@ -1,7 +1,7 @@
 <?php
 
-if (file_exists('config.php')) {
-    require 'config.php';
+if (file_exists(__DIR__ . '/config.php')) {
+    require __DIR__ . '/config.php';
 }
 
 if (!defined('WORDPRESS_PATH')) {
